@@ -146,10 +146,10 @@ int main() {
     printf(" A Populacão da Carta 2 é %lu Habitantes \n", populacao2);
 
     if (populacao1 > populacao2)
-    { printf("A Carta número 1 venceu o desafio de População");
+    { printf("A Carta número 1  Maceio venceu o desafio de População");
         /* code */
     } else {
-        printf("A carta número 2 venceu o desafio de População");
+        printf("A carta número 2 Fortaleza venceu o desafio de População");
     }
     
     printf(" \n");
