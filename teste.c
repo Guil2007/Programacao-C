@@ -79,49 +79,44 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
 
     // VALIDAÇÕES DA INCLUSÃO DOS NAVIOS NO TABULEIRO
 
-    // Validação dos limites do Tabuleiro
-
     // Validação dos limites para navio 1 (horizontal)
-    if (navio1_coluna + NAVIOS > 10) {
+    if (navio1_coluna + NAVIOS > COLUNAS) {
         printf("Erro: Navio 1 fora dos limites do tabuleiro.\n");
         return 1;
     }
 
     // Validação dos limites para navio 2 (vertical)
-    if (navio2_linha + NAVIOS > 10) {
+    if (navio2_linha + NAVIOS > LINHAS) {
         printf("Erro: Navio 2 fora dos limites do tabuleiro.\n");
         return 1;
     }
 
-    // Validação dos limites para navio 3 (diagonal)
-    if (navio3_linha + NAVIOS > 10 || navio3_coluna + 3 > 10) {
+    // Validação dos limites para navio 3 (diagonal inversa)
+    if (navio3_linha + NAVIOS > LINHAS || navio3_coluna - (NAVIOS - 1) < 0) {
         printf("Erro: Navio 3 fora dos limites do tabuleiro.\n");
         return 1;
     }
 
     // Validação dos limites para navio 4 (diagonal)
-    if (navio4_linha + NAVIOS > 10 || navio4_coluna + 3 > 10) {
+    if (navio4_linha + NAVIOS > LINHAS || navio4_coluna + NAVIOS > COLUNAS) {
         printf("Erro: Navio 4 fora dos limites do tabuleiro.\n");
         return 1;
     }
 
-    // Validação dos limites para navio 5 (cone)
-    // Cone com 3 linhas de altura, 5 colunas de largura na base e 1 no topo.
-    // A validação de limites deve considerar a largura máxima de 5.
-
-    if (navio5_linha + 1 > LINHAS || navio5_coluna < 2 || navio5_coluna + 2 > COLUNAS) {
+    // Validação dos limites para navio 5 (cone: 1 no topo, 3 no meio, 5 na base)
+    if (navio5_linha < ALTCONE - 1 || navio5_coluna < 2 || navio5_coluna + 2 > COLUNAS) {
         printf("Erro: Navio 5 fora dos limites do tabuleiro.\n");
         return 1;
     }
 
-    // Validação dos limites para navio 6 (Losango)
-    if (navio6_linha + 2 > 10 || navio6_coluna + 2 > 10) {
+    // Validação dos limites para navio 6 (cruz 3x3)
+    if (navio6_linha - 1 < 0 || navio6_linha + 1 >= LINHAS || navio6_coluna - 1 < 0 || navio6_coluna + 1 >= COLUNAS) {
         printf("Erro: Navio 6 fora dos limites do tabuleiro.\n");
         return 1;
     }
 
-    // Validação dos limites para navio 7 (Cruz)
-    if (navio7_linha + 2 > 10 || navio7_coluna + 2 > 10) {
+    // Validação dos limites para navio 7 (cruz 3x5)
+    if (navio7_linha - 1 < 0 || navio7_linha + 1 >= LINHAS || navio7_coluna - 2 < 0 || navio7_coluna + 2 >= COLUNAS) {
         printf("Erro: Navio 7 fora dos limites do tabuleiro.\n");
         return 1;
     }
@@ -130,8 +125,7 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
 
     // Validação de sobreposição de navios
 
-    // Verifica sobreposição antes de posicionar navio 1
-
+  // Verifica sobreposição para navio 1 (horizontal)
     for (j = 0; j < NAVIOS; j++) {
         if (Tabuleiro[navio1_linha][navio1_coluna + j] != 0) {
             printf("Erro: Sobreposição detectada ao posicionar o navio 1.\n");
@@ -139,7 +133,7 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
         }
     }
 
-    // Verifica sobreposição antes de posicionar navio 2
+    // Verifica sobreposição para navio 2 (vertical)
     for (i = 0; i < NAVIOS; i++) {
         if (Tabuleiro[navio2_linha + i][navio2_coluna] != 0) {
             printf("Erro: Sobreposição detectada ao posicionar o navio 2.\n");
@@ -147,15 +141,15 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
         }
     }
 
-    // Verifica sobreposição antes de posicionar navio 3 (diagonal)
+    // Verifica sobreposição para navio 3 (diagonal inversa)
     for (i = 0; i < NAVIOS; i++) {
-        if (Tabuleiro[navio3_linha + i][navio3_coluna + i] != 0) {
+        if (Tabuleiro[navio3_linha + i][navio3_coluna - i] != 0) {
             printf("Erro: Sobreposição detectada ao posicionar o navio 3.\n");
             return 1;
         }
-    }   
+    }
 
-    // Verifica sobreposição antes de posicionar navio 4 (diagonal)
+    // Verifica sobreposição para navio 4 (diagonal)
     for (i = 0; i < NAVIOS; i++) {
         if (Tabuleiro[navio4_linha + i][navio4_coluna + i] != 0) {
             printf("Erro: Sobreposição detectada ao posicionar o navio 4.\n");
@@ -163,15 +157,11 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
         }
     }
 
-    // Verifica sobreposição antes de posicionar navio 5 (cone)
-
-    for (int i = 0; i < ALTCONE; i++) {
-        
+    // Verifica sobreposição para navio 5 (cone)
+    for (i = 0; i < ALTCONE; i++) {
         int largura = 1 + 2 * (ALTCONE - 1 - i);
-        
         int coluna_inicial = navio5_coluna - (largura / 2);
-
-        for (int j = 0; j < largura; j++) {
+        for (j = 0; j < largura; j++) {
             if (Tabuleiro[navio5_linha - i][coluna_inicial + j] != 0) {
                 printf("Erro: Sobreposição detectada ao posicionar o navio 5.\n");
                 return 1;
@@ -179,44 +169,46 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
         }
     }
 
-    // Verifica sobreposição antes de posicionar navio 6 (Losango)
+    // Verifica sobreposição para navio 6 (cruz 3x3)
     for (i = -1; i <= 1; i++) {
         for (j = -1; j <= 1; j++) {
-            if (Tabuleiro[navio6_linha + i][navio6_coluna + j] != 0) {
-                printf("Erro: Sobreposição detectada ao posicionar o navio 6.\n");
-                return 1;
+            if (i == 0 || j == 0) {
+                if (Tabuleiro[navio6_linha + i][navio6_coluna + j] != 0) {
+                    printf("Erro: Sobreposição detectada ao posicionar o navio 6.\n");
+                    return 1;
+                }
             }
         }
     }
 
-    // Verifica sobreposição antes de posicionar navio 7 (Cruz)
+    // Verifica sobreposição para navio 7 (cruz 3x5)
     for (i = -1; i <= 1; i++) {
-        for (j = -1; j <= 1; j++) {
-            if (Tabuleiro[navio7_linha + i][navio7_coluna + j] != 0) {
-                printf("Erro: Sobreposição detectada ao posicionar o navio 7.\n");
-                return 1;
+        for (j = -2; j <= 2; j++) {
+            if (i == 0 || j == 0) {
+                if (Tabuleiro[navio7_linha + i][navio7_coluna + j] != 0) {
+                    printf("Erro: Sobreposição detectada ao posicionar o navio 7.\n");
+                    return 1;
+                }
             }
         }
-    }   
-
+    }
 
     // Posiciona os Navios no tabuleiro
 
-    // Posiciona o navio 1 (horizontal)
-
+   // Posiciona navio 1 (horizontal)
     for (i = 0; i < NAVIOS; i++) {
-        Tabuleiro[navio1_linha][navio1_coluna+ i] = 3;
+        Tabuleiro[navio1_linha][navio1_coluna + i] = 3;
     }
 
     // Posiciona navio 2 (vertical)
     for (i = 0; i < NAVIOS; i++) {
-        Tabuleiro[navio2_linha+ i][navio2_coluna] = 3;
+        Tabuleiro[navio2_linha + i][navio2_coluna] = 3;
     }
 
-    // Posiciona navio 3 (diagonal)
+    // Posiciona navio 3 (diagonal inversa)
     for (i = 0; i < NAVIOS; i++) {
         Tabuleiro[navio3_linha + i][navio3_coluna - i] = 3;
-    }   
+    }
 
     // Posiciona navio 4 (diagonal)
     for (i = 0; i < NAVIOS; i++) {
@@ -224,54 +216,35 @@ void imprimeTabuleiro(int TamanhoTabuleiro[LINHAS][COLUNAS]){
     }
 
     // Posiciona navio 5 (cone)
-
-    // Posiciona navio 5 (cone)
-    
-    // Posiciona navio 5 (cone)
-    
-    for (int i = 0; i < ALTCONE; i++) {
-        
+    for (i = 0; i < ALTCONE; i++) {
         int largura = 1 + 2 * (ALTCONE - 1 - i);
-
         int coluna_inicial = navio5_coluna - (largura / 2);
-
-        for (int j = 0; j < largura; j++) {
+        for (j = 0; j < largura; j++) {
             Tabuleiro[navio5_linha - i][coluna_inicial + j] = 1;
         }
     }
 
-
-
-    // Posiciona navio 6 (Losango)
+    // Posiciona navio 6 (cruz 3x3)
     for (i = -1; i <= 1; i++) {
         for (j = -1; j <= 1; j++) {
-            if (i == 0 || j == 0) { // Apenas as linhas e colunas centrais
-                Tabuleiro[navio6_linha + i][navio6_coluna + j] = 5;
+            if (i == 0 || j == 0) {
+                Tabuleiro[navio6_linha + i][navio6_coluna + j] = 2;
             }
-
         }
     }
 
-    // Posiciona navio 7 (Cruz)
+    // Posiciona navio 7 (cruz 3x5)
     for (i = -1; i <= 1; i++) {
-            for (j = -2; j <= 2; j++) {
-                if (i == 0 || j == 0) { // Apenas as linhas e colunas centrais
-                    Tabuleiro[navio7_linha + i][navio7_coluna + j] = 2;
+        for (j = -2; j <= 2; j++) {
+            if (i == 0 || j == 0) {
+                Tabuleiro[navio7_linha + i][navio7_coluna + j] = 4;
             }
-
         }
     }
 
-    printf("\n");
-    printf("\n");
-
-    // Exibe o tabuleiro Final
-   
+    printf("\n\n");
     imprimeTabuleiro(Tabuleiro);
-   
-    printf("\n");
-    printf("\n");
- 
+    printf("\n\n");
 
     return 0;
 }
